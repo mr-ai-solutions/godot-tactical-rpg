@@ -63,6 +63,12 @@ func player_wants_to_attack(): stage = 5
 
 
 # --- aux stage funcs --- #
+func _configure_pawns():
+	for pawn in get_children():
+		if !pawn.configure():
+			return false
+	return true
+
 func _aux_select_pawn():
 	var pawn = get_mouse_over_object(2)
 	var tile = get_mouse_over_object(1) if !pawn else pawn.get_tile()
@@ -150,6 +156,10 @@ func move_camera():
 func camera_rotation():
 	if Input.is_action_just_pressed("camera_rotate_left"): tactics_camera.y_rot -= 90
 	if Input.is_action_just_pressed("camera_rotate_right"): tactics_camera.y_rot += 90
+
+
+func post_configure():
+	return _configure_pawns()
 
 
 func act(delta):

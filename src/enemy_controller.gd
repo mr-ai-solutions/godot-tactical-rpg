@@ -29,6 +29,13 @@ func configure(my_arena, my_camera, my_ui_control):
 	curr_pawn = get_children().front()
 
 
+func _configure_pawns():
+	for pawn in get_children():
+		if !pawn.configure():
+			return false
+	return true
+
+
 func choose_pawn():
 	arena.reset()
 	for p in get_children():
@@ -70,6 +77,10 @@ func attack_pawn(delta):
 		tactics_camera.target = curr_pawn
 	attackable_pawn = null
 	stage = 0
+
+
+func post_configure():
+	return _configure_pawns()
 
 
 func act(delta):

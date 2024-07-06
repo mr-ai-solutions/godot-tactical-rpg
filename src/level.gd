@@ -10,6 +10,8 @@ var arena : TacticsArena
 var camera : TacticsCamera
 var ui_control : TacticsPlayerControllerUI
 
+var stage : int = 0
+
 
 func _ready():
 	player = $Player
@@ -17,8 +19,14 @@ func _ready():
 	arena = $Arena
 	camera = $TacticsCamera
 	ui_control = $PlayerControllerUI
+	arena.configure()
 	player.configure(arena, camera, ui_control)
 	enemy.configure(arena, camera, ui_control)
+
+
+func post_configure():
+	if player.post_configure() and enemy.post_configure():
+		stage = 1
 
 
 func turn_handler(delta):
@@ -30,5 +38,7 @@ func turn_handler(delta):
 
 
 func _physics_process(delta):
-	turn_handler(delta)
+	match stage:
+		0: post_configure()
+		1: turn_handler(delta)
 

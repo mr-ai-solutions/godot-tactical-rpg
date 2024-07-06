@@ -82,22 +82,22 @@ func follow_the_path(delta):
 		set_up_direction(Vector3.UP)
 		move_and_slide()
 		var _v = p_velocity
-		if global_transform.origin.distance_to(path_stack.front()) >= 0.2: return
+		if global_transform.origin.distance_to(path_stack.front()) >= 0.15: return
 
 	path_stack.pop_front()
 	move_direction = null
 	is_jumping = false
 	gravity = Vector3.ZERO
 	can_move = path_stack.size() > 0
-
+	if !can_move:
+		adjust_to_center()
 
 
 func adjust_to_center():
-	move_direction = get_tile().global_transform.origin-global_transform.origin
-	set_velocity(move_direction*SPEED*4)
-	set_up_direction(Vector3.UP)
-	move_and_slide()
-	var _v = velocity
+	if get_tile():
+		global_transform.origin = get_tile().global_transform.origin
+		return true
+	return false
 
 
 func start_animator():
@@ -106,8 +106,8 @@ func start_animator():
 
 
 func apply_movement(delta):
-	if !path_stack.is_empty(): follow_the_path(delta)
-	else: adjust_to_center()
+	if !path_stack.is_empty(): 
+		follow_the_path(delta)
 
 
 func do_wait():
@@ -161,6 +161,10 @@ func display_pawn_stats(v):
 	$CharacterStats.visible = v
 
 
+func configure():
+	return adjust_to_center()
+
+
 func _ready():
 	_load_stats()
 	_load_animator_sprite()
@@ -172,5 +176,4 @@ func _process(delta):
 	apply_movement(delta)
 	start_animator()
 	tint_when_not_able_to_act()
-	$CharacterStats/HealthLabel.text = str(curr_health)+"/"+str(max_health)
-	
+	$CharacterStats/HealthLabel.text = str(curr_health)+"/"+str(max_health)	

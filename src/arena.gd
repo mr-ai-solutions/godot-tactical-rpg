@@ -44,7 +44,7 @@ func reset():
 	for t in $Tiles.get_children(): t.reset()
 
 
-func _ready():
+func configure():
 	$Tiles.visible = true
 	Utils.convert_tiles_into_static_bodies($Tiles)
 
